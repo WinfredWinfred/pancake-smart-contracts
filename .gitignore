@@ -33,3 +33,10 @@ bsc-library
 Flatten*
 
 .idea
+.env
+node_modules
+artifacts
+cache
+.env
+*.log
+*.zip

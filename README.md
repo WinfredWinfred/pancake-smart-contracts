@@ -1,27 +1,44 @@
-# Pancake Contracts 🥞
+# PancakeSwap Fork Deployment
 
-This repo contains all the contracts used in PancakeSwap. It is divided in independent projects where each of them contains its smart contracts, test environment and unique config files.
+This repository contains a cleaned-up version of the PancakeSwap v2 smart contracts for easy deployment to any EVM-compatible blockchain.
 
-## Existing projects
+## Prerequisites
 
-| Project name                                                          | Description                                                                                                                | Solidity version(s)      |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| [BSC Library](./projects/bsc-library)                                 | Legacy implementation of BEP20/IBEP20/SafeBEP20. Not to be used for new contracts.                                         | 0.6.12                   |
-| [Cake Vault](./projects/cake-vault)                                   | CAKE vault ("AutoPool") contract that allows auto-compounding for CAKE tokens.                                             | 0.6.12                   |
-| [Exchange Protocol](./projects/exchange-protocol)                     | Based on Uniswap V2, it combines peripheral and core trading and liquidity protocols. It also adds new features like zaps. | 0.5.16 / 0.6.6 / 0.8.4   |
-| [Farms and Pools](./projects/farms-pools)                             | Based on SushiSwap's MasterChef, it also includes stand-alone pools and pool deployer.                                     | 0.6.12                   |
-| [Farm Auctions](./projects/farm-auctions)                             | System for community-based auctions for future CAKE farms.                                                                 | 0.8.4                    |
-| [IFO](./projects/ifo)                                                 | Initial Farm Offerings.                                                                                                    | 0.6.12                   |
-| [Lottery](./projects/lottery)                                         | V2 Lottery system for CAKE built using Chainlink's VRF.                                                                    | 0.8.4                    |
-| [NFT Markets](./projects/nft-markets)                                 | NFT marketplace for ERC721 tokens.                                                                                         | 0.8.4                    |
-| [Pancake Squad](./projects/pancake-squad)                             | Pancake Squad NFT collection.                                                                                              | 0.8.4                    |
-| [Predictions](./projects/predictions)                                 | Prediction protocol contract built using Chainlink's oracle.                                                               | 0.6.12 (v1) / 0.8.4 (v2) |
-| [Profile, NFT, and Gamification](./projects/profile-nft-gamification) | Pancake Bunnies NFT, NFT factories, and Profile system.                                                                    | 0.6.12                   |
-| [SmartChef Factory](./projects/smartchef)                             | SmartChef (a.k.a. Syrup Pools) Factory                                                                                     | 0.6.12 (v1) / 0.8.4 (v2) |
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Docker](https://www.docker.com/) (Optional, for containerized deployment)
+- A wallet with funds on the target network to pay for gas fees.
 
-## Create a new project
+## Deployment Guide
 
-1 - Create a new folder inside `projects` <br/>
-2 - Run `yarn init`
+### 1. Clone the Repository
 
-Commands inside the root `package.json` starting with `lerna` will run the corresponding command in each subproject.
+git clone <your-repo-url>
+cd pancake-smart-contracts 2. Configure Environment Variables
+Create a .env file in the root of the project
+Now, edit the .env file with your specific details:
+
+RPC_URL: The RPC endpoint for the blockchain you are deploying to (like from Alchemy or Infura).
+
+PRIVATE_KEY: The private key of the wallet you will use for deployment. IMPORTANT: This key controls your funds. Do not share it or commit it to Git.
+
+WETH_ADDRESS: The contract address of the wrapped native token like WETH, WBNB, WMATIC on the target chain.
+
+3. Deploy
+   You can deploy using either a local Node.js environment or Docker.
+
+Option A: Deploy with Node.js
+Run the deployment script, which will install dependencies, compile contracts, and deploy them to the network specified in your .env file;
+chmod +x deploy.sh
+./deploy.sh
+
+Option B: Deploy with Docker
+Build the Docker image and run the container. The container will execute the deploy.sh script using the environment variables from your local .env file.
+
+# Build the Docker image
+
+docker build -t pancakeswap-deployer .
+
+# Run the deployment from the container
+
+docker run --rm --env-file .env pancakeswap-deployer
+Upon successful execution, the script will print the deployed contract addresses for the Factory and Router to the console.
